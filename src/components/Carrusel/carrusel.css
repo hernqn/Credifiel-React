@@ -1,0 +1,54 @@
+.carrusel-container {
+    width: 800px;
+    height: 800px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .carousel-track {
+    display: flex;
+    width: 800px;
+    height: 800px;
+    transition: transform 0.5s ease-in-out;
+  }
+  
+  .carousel-card {
+    min-width: 800px;
+    height: 600px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  
+  .carousel-card img {
+    width: 800px;
+    height: 600px;
+    object-fit: cover;
+  }
+  
+  
+  /* Botones */
+  .carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+  }
+  
+  .carousel-btn:first-child {
+    left: 20px;
+  }
+  
+  .carousel-btn:last-child {
+    right: 20px;
+  }
+  
