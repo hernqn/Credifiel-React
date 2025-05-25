@@ -4,15 +4,15 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const data = [
     { 
-        img: "https://cdn2.hubspot.net/hubfs/2741331/LP-%20Requisitos%20de%20un%20credito%20con%20credifiel/cta-03.png",
+        img: "https://blog.credifiel.com.mx/hubfs/credifiel%20tu%20mejor%20opcion%20para%20prestamo.jpeg",
         alt: "Créditos Credifiel"
     },
     { 
-        img: "https://multifinanca.com/wp-content/uploads/2023/01/WhatsApp-Image-2023-01-16-at-20.04.21.jpeg",
+        img: "https://info.credifiel.com.mx/hubfs/WhatsApp%20Image%202024-12-03%20at%2017.37.33_11zon.jpeg",
         alt: "Servicios Financieros"
     },
     { 
-        img: "https://cdn.noticiasenlamira.com/2020/06/Credifiel.jpg",
+        img: "https://2741331.fs1.hubspotusercontent-na1.net/hubfs/2741331/seguridad-confianza-credifiel.jpeg",
         alt: "Beneficios Credifiel"
     }
 ];

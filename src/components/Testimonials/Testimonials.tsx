@@ -12,32 +12,32 @@ interface Testimonial {
 
 const testimonials: Testimonial[] = [
     {
-        name: "María González",
-        role: "Cliente Satisfecha",
-        comment: "Credifiel me ayudó a conseguir el préstamo que necesitaba con un proceso muy sencillo y rápido. ¡Excelente servicio!",
+        name: "Laura Ramírez",
+        role: "Empleado de Gobierno",
+        comment: "Obtener mi préstamo fue rápido y sin complicaciones. La atención personalizada de Credifiel hizo toda la diferencia.",
         rating: 5,
-        image: "https://randomuser.me/api/portraits/women/1.jpg"
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQF5TcVFjPc_Z0ZdLUAA2Df6uTrJL1C5Al4-w&s"
     },
     {
-        name: "Juan Pérez",
-        role: "Empresario",
-        comment: "La mejor opción para préstamos empresariales. El equipo de atención al cliente es muy profesional y eficiente.",
+        name: "Carlos Méndez",
+        role: "Pequeño Empresario",
+        comment: "Gracias a Credifiel pude ampliar mi negocio. Me ofrecieron condiciones claras y un servicio impecable.",
         rating: 5,
-        image: "https://randomuser.me/api/portraits/men/1.jpg"
+        image: "https://www.clarin.com/2023/12/01/rhVeUAooY_2000x1500__1.jpg"
     },
     {
-        name: "Ana Martínez",
-        role: "Profesora",
-        comment: "Gracias a Credifiel pude financiar mis estudios de posgrado. Las tasas son muy competitivas.",
+        name: "Andrea López",
+        role: "Maestra",
+        comment: "Me sorprendió lo sencillo que fue el proceso. La asesoría fue clara desde el inicio. Totalmente recomendable.",
         rating: 4,
-        image: "https://randomuser.me/api/portraits/women/2.jpg"
+        image: "https://centrointegraldepsicologia.com/wp-content/uploads/2023/06/El-Sindrome-de-la-Buena-Persona-Los-Limites-Olvidados-1024x576.png"
     }
 ];
 
 const TestimonialsSection = () => {
     return (
         <section className="testimonials-section">
-            <h2 className="testimonials-title">Lo que dicen nuestros clientes</h2>
+            <h2 className="testimonials-title">Testimonios de nuestros clientes</h2>
             <div className="testimonials-grid">
                 {testimonials.map((testimonial, index) => (
                     <div key={index} className="testimonial-card">
@@ -60,7 +60,7 @@ const TestimonialsSection = () => {
                                 />
                             ))}
                         </div>
-                        <p className="testimonial-comment">{testimonial.comment}</p>
+                        <p className="testimonial-comment">"{testimonial.comment}"</p>
                     </div>
                 ))}
             </div>
@@ -68,4 +68,4 @@ const TestimonialsSection = () => {
     );
 };
 
-export default TestimonialsSection; 
+export default TestimonialsSection;

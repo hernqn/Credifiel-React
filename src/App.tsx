@@ -4,7 +4,7 @@ import './App.css';
 import Navbar from './components/NavBar/Navbar';
 import HomePage from './pages/Home/HomePage';
 import DashboardPage from './pages/Dashboard/DashboardPage';
-import Chatbot from './components/chatbot1/chatbot';
+import Chat from './components/Chat/Chat';
 
 function App() {
   return (
@@ -17,8 +17,7 @@ function App() {
             <Route path="/dashboard" element={<DashboardPage />} />
           </Routes>
         </main>
-        {/* Chatbot flotante disponible en todas las páginas */}
-        <Chatbot companyName="Credifiel" />
+        <Chat />
       </div>
     </Router>
   );

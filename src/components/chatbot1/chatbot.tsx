@@ -1,176 +1,212 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FaComments, FaTimes, FaPaperPlane, FaRobot, FaUser } from 'react-icons/fa';
 import './chatbot.css';
 
-interface Message {
-  id: number;
-  text: string;
-  isBot: boolean;
-  timestamp: Date;
+interface ConversationMessage {
+  role: 'system' | 'user' | 'assistant';
+  content: string;
 }
 
 interface ChatbotProps {
-  companyName?: string;
+  companyName: string;
 }
 
-const Chatbot: React.FC<ChatbotProps> = ({ companyName = "Credifiel" }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      text: `¡Hola! Soy el asistente virtual de ${companyName}. ¿En qué puedo ayudarte hoy?`,
-      isBot: true,
-      timestamp: new Date()
-    }
+const AIChatbot: React.FC<ChatbotProps> = ({ companyName }) => {
+  const [apiKey, setApiKey] = useState('');
+  const [isConnected, setIsConnected] = useState(false);
+  const [messages, setMessages] = useState([
+    { sender: 'bot', content: '¡Hola! Soy tu asistente con inteligencia artificial. Una vez que configures tu API Key, podremos conversar sobre cualquier tema. 😊' }
   ]);
-  const [inputText, setInputText] = useState('');
+  const [currentMessage, setCurrentMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [conversationHistory, setConversationHistory] = useState<ConversationMessage[]>([]);
+  const [error, setError] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isTyping]);
 
-  const predefinedResponses: { [key: string]: string } = {
-    'hola': '¡Hola! Bienvenido a Credifiel. ¿Te interesa conocer nuestros préstamos?',
-    'préstamo': 'Ofrecemos préstamos personales con tasas competitivas. ¿Qué monto necesitas?',
-    'prestamo': 'Ofrecemos préstamos personales con tasas competitivas. ¿Qué monto necesitas?',
-    'tasa': 'Nuestras tasas van desde el 15% anual. Depende del monto y plazo que elijas.',
-    'requisitos': 'Los requisitos son: ser mayor de edad, tener ingresos comprobables y identificación oficial.',
-    'tiempo': 'El proceso de aprobación toma menos de 24 horas una vez que tengas todos los documentos.',
-    'monto': 'Prestamos desde $5,000 hasta $500,000 pesos, dependiendo de tu capacidad de pago.',
-    'documentos': 'Necesitas: INE, comprobante de ingresos, comprobante de domicilio y estado de cuenta.',
-    'sucursal': 'Tenemos sucursales en las principales ciudades del país. ¿En qué ciudad te encuentras?',
-    'contacto': 'Puedes contactarnos al 01-800-CREDIFIEL o visitar nuestra página de contacto.',
-    'horario': 'Nuestro horario de atención es de lunes a viernes de 9:00 AM a 6:00 PM.',
-    'ayuda': 'Puedo ayudarte con información sobre préstamos, requisitos, tasas, montos y más.',
-    'gracias': '¡De nada! ¿Hay algo más en lo que pueda ayudarte?',
-    'adiós': '¡Hasta luego! No dudes en contactarnos si necesitas más información.',
-    'adios': '¡Hasta luego! No dudes en contactarnos si necesitas más información.'
-  };
-
-  const getResponse = (userMessage: string): string => {
-    const message = userMessage.toLowerCase();
+  const setupAPI = () => {
+    const key = apiKey.trim();
     
-    // Buscar palabras clave en el mensaje
-    for (const [keyword, response] of Object.entries(predefinedResponses)) {
-      if (message.includes(keyword)) {
-        return response;
-      }
+    if (!key) {
+      setError('Por favor ingresa tu API Key');
+      return;
     }
 
-    // Respuestas contextuales más inteligentes
-    if (message.includes('cuanto') || message.includes('cuánto')) {
-      if (message.includes('tiempo') || message.includes('tardar')) {
-        return 'El proceso completo toma entre 1 a 3 días hábiles desde que envías tu solicitud.';
-      }
-      if (message.includes('pagar') || message.includes('mensual')) {
-        return 'Los pagos mensuales dependen del monto y plazo. ¿Te gustaría que calculemos una cotización personalizada?';
-      }
-      return 'Prestamos desde $5,000 hasta $500,000 pesos con tasas desde 15% anual.';
+    if (!key.startsWith('sk-')) {
+      setError('La API Key debe comenzar con "sk-"');
+      return;
     }
 
-    if (message.includes('solicitar') || message.includes('aplicar')) {
-      return 'Puedes solicitar tu préstamo directamente en nuestra página web o visitando una sucursal. ¿Prefieres que te guíe por el proceso en línea?';
-    }
-
-    if (message.includes('seguro') || message.includes('confiable')) {
-      return 'Credifiel es una empresa 100% regulada por la CONDUSEF con más de 10 años de experiencia en el mercado financiero mexicano.';
-    }
-
-    // Respuesta por defecto
-    return 'Gracias por tu pregunta. Te recomiendo contactar a uno de nuestros asesores al 01-800-CREDIFIEL para información más específica. ¿Hay algo más en lo que pueda ayudarte?';
+    setIsConnected(true);
+    setError('');
+    setMessages(prev => [...prev, { sender: 'bot', content: '¡Perfecto! Ya estoy conectado con OpenAI. ¿En qué puedo ayudarte?' }]);
   };
 
-  const handleSendMessage = () => {
-    if (!inputText.trim()) return;
+  const sendMessage = async () => {
+    const message = currentMessage.trim();
+    if (!message) return;
 
     // Agregar mensaje del usuario
-    const userMessage: Message = {
-      id: Date.now(),
-      text: inputText,
-      isBot: false,
-      timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, userMessage]);
-    setInputText('');
+    const newMessages = [...messages, { sender: 'user', content: message }];
+    setMessages(newMessages);
+    setCurrentMessage('');
     setIsTyping(true);
 
-    // Simular tiempo de respuesta del bot
-    setTimeout(() => {
-      const botResponse: Message = {
-        id: Date.now() + 1,
-        text: getResponse(inputText),
-        isBot: true,
-        timestamp: new Date()
-      };
+    try {
+      // Agregar mensaje a historial
+      const newHistory = [...conversationHistory, { role: 'user' as const, content: message }];
       
-      setMessages(prev => [...prev, botResponse]);
-      setIsTyping(false);
-    }, 1000 + Math.random() * 1000); // 1-2 segundos de delay
-  };
+      // Llamar directamente a OpenAI API
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: 'gpt-3.5-turbo',
+          messages: [
+            { role: 'system' as const, content: 'Eres un asistente útil y amigable que responde en español.' },
+            ...newHistory
+          ],
+          max_tokens: 150,
+          temperature: 0.7
+        })
+      });
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const botResponse = data.choices[0].message.content;
+      
+      // Agregar respuesta del bot
+      const updatedHistory = [...newHistory, { role: 'assistant' as const, content: botResponse }];
+      setConversationHistory(updatedHistory);
+      setMessages(prev => [...prev, { sender: 'bot', content: botResponse }]);
+
+    } catch (error) {
+      console.error('Error completo:', error);
+      let errorMessage = 'Lo siento, ocurrió un error. ';
+      
+      const err = error as { message: string };
+      if (err.message.includes('401')) {
+        errorMessage += 'API Key inválida o sin permisos.';
+      } else if (err.message.includes('429')) {
+        errorMessage += 'Límite de uso excedido. Esperando 60 segundos...';
+        setMessages(prev => [...prev, { sender: 'bot', content: errorMessage }]);
+        // Esperar 60 segundos y reintentar
+        await new Promise(resolve => setTimeout(resolve, 60000));
+        return sendMessage(); // Reintentar el mensaje
+      } else if (err.message.includes('400')) {
+        errorMessage += 'Error en la solicitud. Revisa tu configuración.';
+      } else if (err.message.includes('Failed to fetch')) {
+        errorMessage += 'Error de conexión. Verifica tu internet.';
+      } else {
+        errorMessage += `Error: ${err.message}`;
+      }
+      
+      setMessages(prev => [...prev, { sender: 'bot', content: errorMessage }]);
+    } finally {
+      setIsTyping(false);
     }
   };
 
-  const quickReplies = [
-    '¿Qué requisitos necesito?',
-    '¿Cuánto puedo pedir prestado?',
-    '¿Cuáles son las tasas de interés?',
-    'Quiero solicitar un préstamo'
-  ];
-
-  const handleQuickReply = (reply: string) => {
-    setInputText(reply);
-    setTimeout(() => handleSendMessage(), 100);
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      if (isConnected) {
+        sendMessage();
+      } else {
+        setupAPI();
+      }
+    }
   };
 
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => setError(''), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+  
   return (
-    <div className="chatbot">
-      {isOpen ? (
-        <div className="chatbot-window">
-          <div className="chatbot-header">
-            <h3>Chat con {companyName}</h3>
-            <button onClick={() => setIsOpen(false)}>
-              <FaTimes />
-            </button>
-          </div>
-          <div className="chatbot-messages">
-            {messages.map((message) => (
-              <div key={message.id} className={`message ${message.isBot ? 'bot-message' : 'user-message'}`}>
-                {message.text}
-              </div>
-            ))}
-          </div>
-          <div className="chatbot-input">
-            <input
-              type="text"
-              placeholder="Escribe tu mensaje..."
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              onKeyPress={handleKeyPress}
-            />
-            <button onClick={handleSendMessage}>
-              <FaPaperPlane />
-            </button>
+    <div className="chat-container">
+      <div className="chat-header">
+        🤖 Mi Chatbot con IA
+      </div>
+      
+      {!isConnected && (
+        <div className="api-setup">
+          {error && <div className="error">{error}</div>}
+          <input
+            type="password"
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+            onKeyPress={handleKeyPress}
+            className="api-input"
+            placeholder="Ingresa tu API Key de OpenAI"
+          />
+          <button className="api-button" onClick={setupAPI}>
+            Conectar IA
+          </button>
+          <div className="status">
+            Necesitas una API Key de OpenAI para usar el chatbot.<br/>
+            <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer">
+              Obtén tu API Key aquí
+            </a>
           </div>
         </div>
-      ) : (
-        <button className="chatbot-toggle" onClick={() => setIsOpen(true)}>
-          <FaComments />
-        </button>
       )}
+
+      <div className="chat-messages">
+        {messages.map((message, index) => (
+          <div
+            key={index}
+            className={`message ${message.sender === 'user' ? 'user-message' : 'bot-message'}`}
+          >
+            {message.content}
+          </div>
+        ))}
+        
+        {isTyping && (
+          <div className="typing">
+            <div className="typing-dots">
+              <div className="typing-dot"></div>
+              <div className="typing-dot"></div>
+              <div className="typing-dot"></div>
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+
+      <div className="chat-input-container">
+        <input
+          type="text"
+          value={currentMessage}
+          onChange={(e) => setCurrentMessage(e.target.value)}
+          onKeyPress={handleKeyPress}
+          className="chat-input"
+          placeholder="Escribe tu mensaje..."
+          disabled={!isConnected}
+        />
+        <button
+          className="send-button"
+          onClick={sendMessage}
+          disabled={!isConnected}
+        >
+          ➤
+        </button>
+      </div>
     </div>
   );
 };
 
-export default Chatbot;
+export default AIChatbot;  

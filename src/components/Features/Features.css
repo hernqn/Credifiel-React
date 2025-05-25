@@ -1,29 +1,27 @@
 .features-section {
     padding: 80px 20px;
-    background: #ffffff;
+    background: #f7f9fc;
+    font-family: 'Poppins', 'Roboto', sans-serif;
 }
 
 .features-container {
     max-width: 1200px;
     margin: 0 auto;
+    text-align: center;
 }
 
 .features-title {
-    text-align: center;
-    font-size: 2.5rem;
-    color: #2d3748;
-    margin-bottom: 20px;
+    font-size: 2.8rem;
+    color: #1a202c;
     font-weight: 700;
+    margin-bottom: 10px;
 }
 
 .features-subtitle {
-    text-align: center;
-    font-size: 1.2rem;
-    color: #718096;
-    margin-bottom: 60px;
+    font-size: 1.1rem;
+    color: #4a5568;
     max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto 50px;
 }
 
 .features-grid {
@@ -33,62 +31,74 @@
 }
 
 .feature-card {
-    text-align: center;
+    background: #ffffff;
     padding: 30px;
     border-radius: 15px;
-    background: #ffffff;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
 }
 
 .feature-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
 }
 
 .feature-icon {
-    font-size: 2.5rem;
-    color: #4299e1;
-    margin-bottom: 20px;
+    font-size: 2.8rem;
+    color: #005aa7;
+    background-color: #e6f0fb;
+    border-radius: 50%;
+    width: 60px;
     height: 60px;
+    margin: 0 auto 20px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .feature-title {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     color: #2d3748;
-    margin-bottom: 15px;
     font-weight: 600;
+    margin-bottom: 10px;
 }
 
 .feature-description {
     font-size: 1rem;
-    color: #718096;
+    color: #4a5568;
     line-height: 1.6;
-    margin: 0;
+}
+
+.cta-button-wrapper {
+    margin-top: 50px;
+}
+
+.cta-button {
+    display: inline-block;
+    background-color: #005aa7;
+    color: #ffffff;
+    padding: 14px 30px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: #003f7f;
 }
 
 @media (max-width: 768px) {
-    .features-section {
-        padding: 60px 15px;
-    }
-
     .features-title {
-        font-size: 2rem;
+        font-size: 2.2rem;
     }
 
     .features-subtitle {
-        font-size: 1.1rem;
-        margin-bottom: 40px;
-    }
-
-    .features-grid {
-        gap: 30px;
+        font-size: 1rem;
     }
 
     .feature-card {
         padding: 25px;
     }
-} 
+}
